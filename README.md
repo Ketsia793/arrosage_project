@@ -19,3 +19,4 @@ S'exécute via Arduino IDE 2.3.4
 
 ## Sources
 Arduino et Elegoo documentations
+* Celinelylou n'est pas contributrice de ce projet, elle était seulement détentrice de mon pc actuel et possédait la même clef SSH que j'ai actuellement. 
