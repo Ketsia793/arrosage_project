@@ -1,7 +1,7 @@
 **arrosage automatique project**
 
 ## À propos
-Ici il s'agit d'un projet en cours qui a pour but de créer un  système d’arrosage de plantes Arduino,
+Ici il s'agit d'un projet IoT en cours qui a pour but de créer un  système d’arrosage de plantes Arduino,
 un système qui facilite la prise en soin des plantes.
 
 ## Caractéristiques
