@@ -1,4 +1,4 @@
-**arrosage automatique project**
+**Arrosage automatique project**
 
 ## À propos
 Ici il s'agit d'un projet IoT en cours qui a pour but de créer un  système d’arrosage de plantes Arduino,
@@ -12,6 +12,7 @@ Refactorisation : Non
 Responsivité : Non
 UX/UI : Non
 IDE : Arduino IDE 2.3.4
+Application : Blynk
 OS : Mac 
 
 ## Utilisation
