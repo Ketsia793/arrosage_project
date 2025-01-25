@@ -66,7 +66,7 @@ BLYNK_WRITE(V1) {
 
 void loop() {
   soilMoisture();
-  Blynk.();//Run the Blynk library
+  Blynk.run();//Run the Blynk library
   //delay(200);
 
 }
