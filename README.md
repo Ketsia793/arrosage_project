@@ -1,4 +1,4 @@
-**Arrosage automatique project**
+**Système arrosage automatique"Planty Water'O"**
 
 ## À propos
 Ici il s'agit d'un projet IoT en cours qui a pour but de créer un  système d’arrosage de plantes,
