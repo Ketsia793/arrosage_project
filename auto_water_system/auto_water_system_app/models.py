@@ -1,9 +1,13 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.db import models 
+# from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response  
 from django.utils import timezone
-
+from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import User
 class CountUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
+    username = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255)                               
     email = models.EmailField(unique=True)
@@ -16,7 +20,6 @@ class CountUser(AbstractUser):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-        # Ajout des related_name pour résoudre les conflits
         permissions = [('can_view_count_user', 'Can view count user')]
 
     # Définition des related_name pour groups et user_permissions
@@ -39,20 +42,6 @@ class CountUser(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
 
-class UserProfile(models.Model):
-    profile_id = models.BigAutoField(primary_key=True)
-    user = models.OneToOneField(CountUser, on_delete=models.CASCADE, related_name='profile')
-    username = models.CharField(max_length=255)
-    image = models.ImageField(default='default.jpg', upload_to='images/')
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'User Profile'
-        verbose_name_plural = 'User Profiles'
-
-    def __str__(self):
-        return f"Profile de {self.user.username}"
 
 class UserPlant(models.Model):
     plant_id = models.BigAutoField(primary_key=True)

@@ -1,0 +1,29 @@
+# Utiliser une image Python officielle comme base
+FROM python:3.10  
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Installer les dépendances système
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copier les fichiers de dépendances
+COPY requirements.txt .
+
+RUN python -m pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y bash
+
+# Copier le reste du code de l'application
+COPY . .
+
+# Exposer le port sur lequel l'application va tourner
+EXPOSE 8000
+
+# Ajouter un script d'entrée
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+# Commande pour lancer l'application
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]

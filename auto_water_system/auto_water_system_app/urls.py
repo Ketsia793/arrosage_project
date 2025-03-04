@@ -1,21 +1,16 @@
 from django.urls import path
-from .import views
+from .import views 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 urlpatterns = [
-    path('CountUser/', views.get_all_plants),
-    path('CountUser/create/', views.create_user),
-    path('UserProfile/', views.get_user),
-    path('signUp/',views.create_user),
-    path('login/', TokenObtainPairView.as_view(), name='login_obtain_pair'),
-    path('deleteUser/', views.delete_user),
-    path('getUserId/', views.get_userId),
-    path('getUserCount/', views.get_all_plants),
-    path('getUserProfil/',views.get_user_profil),
-    path('putUserProfil/', views.put_user_profil),
+    path('users/count/', views.CountUser, name="Countusers"),
+    path('users/create/', views.create_user, name="create_user"),
+    path('users/profile/', views.get_user_profil, name="get_user_profile"),
+    path('users/profile/put/', views.put_user_profil, name="put_user_profile"),
+    path('users/delete/', views.delete_user, name="delete_user"),
+    path('users/id/', views.get_userId, name="get_user_id"),
+    # path('auth/signup/', views.create_user, name="signup"),
+    path('auth/login/', TokenObtainPairView.as_view(), name="login"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-

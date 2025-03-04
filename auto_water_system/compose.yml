@@ -1,0 +1,47 @@
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: auto_water_system
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5433:5432"  
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:  
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auto_water_system"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  django-web:
+    build: .
+    container_name: django-docker
+    restart: always
+    ports:
+      - "8001:8000"
+    depends_on:
+      db:
+        condition: service_healthy 
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG}
+      DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DATABASE_ENGINE: ${DATABASE_ENGINE}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: db  
+      DATABASE_PORT: 5432
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
