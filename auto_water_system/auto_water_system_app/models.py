@@ -1,10 +1,8 @@
 from django.db import models 
-# from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response  
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-# from django.contrib.auth.models import User
 class CountUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     username = models.CharField(max_length=255)

@@ -1,11 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import status
-# Create your views here.
-from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view, authentication_classes, permission_classes 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import CountUser, UserPlant 
+from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError
+from django.utils import timezone
+from datetime import datetime
+from .models import CountUser, UserPlant  
 from .supabaseUtils import (
     fetch_from_supabase,
     insert_to_supabase,
@@ -15,51 +17,64 @@ from .supabaseUtils import (
     getuserPost_by_Id_from_supabase,
     updateuser_profil_by_Id_from_supabase,
 )
-from django.utils import timezone
-from datetime import datetime
 
 @api_view(['POST'])
 def create_user(request):
     data = request.data
-    
-    # Hash le mot de passe avant insertion
-    if 'password' in data:
-        data['password'] = make_password(data['password'])
-        
-    # la condition de la création du username c'est l'email
-    base_username = data['email'].split('@')[0]
-    username = base_username
-    counter = 1
-    
-    # la boucle conditionne l'existence du username pour éviter toute répétition
-    while CountUser.objects.filter(username=username).exists():
-        username = f"{base_username}{counter}"
-        counter += 1
-        
-    print(data)
-    user = CountUser.objects.create(
-        username =username,
-        last_name =data['last_name'],
-        first_name =data['first_name'],
-        email=data['email'],
-        password=data['password'],
-        is_staff =False,
-        is_active =False,
-        is_superuser =False,
-        date_joined =timezone.now().isoformat()
-    )
-    
-    
-    profil_data = {
-        'user_id': user.id,  # Use .id instead of ['id']
-        'username': user.username,  # Use .username instead of ['username']
-        'bio': '',
-        'image': 'default.jpg',
-        'created_at': timezone.now().date().isoformat(),
-        'update_at': None
-    }
-    new_profil = new_insert_to_supabase('auto_water_system_app_UserProfile', profil_data)
-    return Response({'user': user.id, 'profile': new_profil})
+
+    # Récupérer et nettoyer les données
+    last_name = data.get('last_name', '').strip()
+    first_name = data.get('first_name', '').strip()
+    username = data.get('username', '').strip()
+    email = data.get('email', '').strip()
+    password = data.get('password', '').strip()
+
+    # Vérification des champs requis
+    if not email or not password:
+        return Response({"error": "Email et mot de passe sont obligatoires"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Vérification de l'unicité de l'email et du nom d'utilisateur
+    if CountUser.objects.filter(username=username).exists():
+        return Response({"error": "Ce nom d'utilisateur est déjà pris."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if CountUser.objects.filter(email=email).exists():
+        return Response({"error": "Cet email est déjà utilisé."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Hash du mot de passe
+    hashed_password = make_password(password)
+
+    # Création de l'utilisateur
+    try:
+        user = CountUser.objects.create(
+            username=username,
+            last_name=last_name,
+            first_name=first_name,
+            email=email,
+            password=hashed_password,
+            is_staff=False,
+            is_active=True,  # L'utilisateur peut être actif dès la création
+            is_superuser=False,
+            date_joined=timezone.now()
+        )
+    except IntegrityError as e:
+        return Response({"error": "Erreur de contrainte d'intégrité lors de la création de l'utilisateur", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": "Erreur lors de la création de l'utilisateur", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    try:
+        user_plant = UserPlant.objects.create(
+            user=user,
+            name="Plante par défaut",
+            image='default.jpg',
+            created_at=timezone.now()
+        )
+    except Exception as e:
+        return Response({"error": "Erreur lors de la création de la plante par défaut", "details": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Retourner la réponse de succès
+    return Response({'user': user.id, 'user_plant': user_plant.id}, status=status.HTTP_201_CREATED)
+
+
 
 
 @api_view(['POST'])
@@ -72,7 +87,7 @@ def create_plant(request):
     # Assurez-vous que les données essentielles sont présentes
     name = data.get('name')
     image = data.get('image')
-    
+
     if not name:
         return Response({"detail": "Le nom de la plante est obligatoire."}, status=status.HTTP_400_BAD_REQUEST)
     
