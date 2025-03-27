@@ -68,5 +68,4 @@ void loop() {
   soilMoisture();
   Blynk.run();//Run the Blynk library
   //delay(200);
-
 }
