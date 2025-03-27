@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from pathlib import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,11 +91,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'auto_water',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': os.getenv('DJANGO_DB_NAME','auto_water'),
+        'USER': os.getenv('DJANGO_DB_USER','postgres'),
+        'PASSWORD': os.getenv ('DJANGO_DB_PASSWORD','postgres'),
         'HOST': os.getenv('DJANGO_DB_HOST', 'db'),
-        'PORT': '5432',
+        'PORT': os.getenv ('DJANGO_DB_PORT','5432'),
     }
 }
 
