@@ -15,6 +15,7 @@ COPY requirements.txt /app/
 # Mettre à jour pip et installer les dépendances
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install python-dotenv
 
 # Copier le script wait-for-it.sh
 COPY scripts/wait-for-it.sh /app/wait-for-it.sh
