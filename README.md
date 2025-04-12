@@ -8,6 +8,8 @@ Ces données en temps réels seront comparées avec des "fausses" données de fa
 ## Caractéristiques
 État du projet : Prototype Nombre de participants : 1 (solo)
 Technologies : C++ / Python / DRF 
+Protocole de communication : MQTT / I2C
+Microcontroleur : ESP32
 Others tech : Docker / Thunder Client
 Refactorisation : Non 
 Responsivité : Non UX/UI : Oui (en cours) 
