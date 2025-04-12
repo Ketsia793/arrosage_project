@@ -14,7 +14,7 @@ Others tech : Docker / Thunder Client
 Refactorisation : Non 
 Responsivité : Non UX/UI : Oui (en cours) 
 IDE : Arduino IDE 2.3.4 / VSCode
-SGBDR : PostgrSQL 
+SGBDR : PostgreSQL 
 Application : Blynk 
 OS : Mac 
 
